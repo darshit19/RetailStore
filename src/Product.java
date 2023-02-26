@@ -18,6 +18,7 @@ public class Product {
         this.stock=stock;
         this.discount=discount;
         this.validRetDays=validRetDays;
+        deltaID=1;
     }
 
     public void setId(String id) {

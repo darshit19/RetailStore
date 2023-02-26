@@ -25,7 +25,6 @@ public class Admin extends Person implements Fine{
     }
 
     void addProduct(ArrayList<Product> products, BufferedReader br){
-
         try{
             while(true){
                 System.out.print("Enter ProductName : ");

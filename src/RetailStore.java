@@ -2,16 +2,17 @@ import java.io.BufferedReader;
 import java.io.Console;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Array;
 import java.util.ArrayList;
 
 public class RetailStore {
-    //no of admins are fixed so normal fixed size array is ok
+    //no of admins are fixe
+    // d so normal fixed size array is ok
     private Admin[] admins;
     private ArrayList<Product> products;
     //users can be added dynamically so array size is not fixed so arraylist
     private ArrayList<User> users;
     private int currAdminIndex;
+    private User currentuser ;
 
     RetailStore(){
         currAdminIndex = -1;
@@ -67,25 +68,24 @@ public class RetailStore {
 
     //function to add the product which can be only used by admin
 
-    private void displayProducts(BufferedReader br){
+    private void displayProducts(){
         printDashLine();
-        System.out.println("hello display");
-        //System.out.printf("%-11s %-20s %-11s %-6s %-12s %-12s %-8 %-18", "PRODUCT ID", "PRODUCTNAME", "ISAVAILABLE", "STOCK", "BASEPRICE","SELLPRICE","DISCOUNT","VALID RETURN DAYS");
+        System.out.printf("%-11s %-20s %-11s %-6s %-12s %-12s %-10s %-18s", "PRODUCT ID", "PRODUCTNAME", "ISAVAILABLE", "STOCK", "BASEPRICE","SELLPRICE","DISCOUNT","VALID RETURN DAYS");
         System.out.println();
         printDashLine();
-//iterates over the list
-//        for(Product prd: products)
-//        {
-//            String temp;
-//            if(prd.getStock()>0){
-//                temp="In-store";
-//            }else{
-//                temp="OutOfStock";
-//            }
-//            System.out.format("%-11s %-20s %-11s %-6s %-12s %-12s %-8 %-18",prd.getId(),prd.getPrdName(),temp,prd.getStock(),prd.getbPrice(),prd.getsPrice(),prd.getDiscount(),prd.getValidRetDays() );
-//            System.out.println();
-//        }
-//        System.out.println("----------------------------------------------------------------------------------------------");
+        //iterates over the list
+        for(Product prd: products)
+        {
+            String temp;
+            if(prd.getStock()>0){
+                temp="In-store";
+            }else{
+                temp="OutOfStock";
+            }
+            System.out.format("%-11s %-20s %-11s %-6s %-12s %-12s %-10s %-18s",prd.getId(),prd.getPrdName(),temp,prd.getStock(),prd.getbPrice(),prd.getsPrice(),prd.getDiscount(),prd.getValidRetDays() );
+            System.out.println();
+        }
+        System.out.println("----------------------------------------------------------------------------------------------");
     }
 
     private void countTotalProducts(){
@@ -102,6 +102,26 @@ public class RetailStore {
         }
         System.out.println("Maximum Profit can be achieved is : "+totalProfit+" Rs.");
     }
+    private void displayProductsToUser(BufferedReader br){
+        printDashLine();
+        System.out.printf("%-11s %-20s %-11s %-6s %-12s %-20s", "PRODUCT ID", "PRODUCTNAME", "ISAVAILABLE","PRICE","DISCOUNT","VALID RETURN DAYS");
+        System.out.println();
+        printDashLine();
+        //iterates over the list
+        for(Product prd: products)
+        {
+            String temp;
+            if(prd.getStock()>0){
+                temp="In-store";
+            }else{
+                temp="OutOfStock";
+            }
+            System.out.format("%-11s %-20s %-11s %-6s %-12s %-20s",prd.getId(),prd.getPrdName(),temp,prd.getsPrice(),prd.getDiscount(),prd.getValidRetDays() );
+            System.out.println();
+        }
+        System.out.println("----------------------------------------------------------------------------------------------");
+    }
+
     public void handleAdmin(BufferedReader br) throws IOException {
         printAdminWelcomeMsg();
         String aName;
@@ -126,7 +146,7 @@ public class RetailStore {
                            admins[currAdminIndex].addProduct(products,br);
                            break;
                        case 2:
-                           displayProducts(br);
+                           displayProducts();
                            break;
                        case 3:
                            countTotalProducts();
@@ -147,6 +167,7 @@ public class RetailStore {
 
         }
     }
+
     public void start(){
         BufferedReader br =new BufferedReader(new InputStreamReader(System.in));
         // for printing welcome message
@@ -164,11 +185,11 @@ public class RetailStore {
                     case 1:
                         handleAdmin(br);
                         break;
-                    //case 2:
-                        //handleUser(br);
-                      //  break;
-                    //case 3:
-                      //  return;
+                    case 2:
+                        handleUser(br);
+                        break;
+                    case 3:
+                        return;
                     default:
                         printInvalidChoice();
                         break;
@@ -178,7 +199,226 @@ public class RetailStore {
             }
         }
     }
+    public void profilePart(BufferedReader br){
+        currentuser.showProfile();
 
+        printPurchasedProducts();
+
+        printDashLine();
+        System.out.printf("%-8s %-20s %-15s", "BOOK ID", "BOOKNAME", "PRICEPOINTS");
+        System.out.println();
+        printDashLine();
+        if(currentuser.getPurchasedProductsSize()==0){
+            System.out.println("--------------------------You haven't purchased any books--------------------------------\n");
+        }else{
+            for(int i=currentuser.getPurchasedProductsSize()-1;i>=0;i--){
+                //int id = currentuser.getPurchasedProducts().get(i);
+//                Book tBook = books.get(id);
+//                System.out.format("%-8s %-20s %-15s", tBook.getBookId(), tBook.getBookName(), tBook.getPricePoints());
+                System.out.println();
+            }
+        }
+
+        printLine();
+        backToCatalogOpt();
+
+        int catalogChoice=takeChoice(br);
+        switch(catalogChoice){
+            case 1:
+                return;
+            case 2:
+                currentuser.setLoggedIn(false);
+                System.out.println("\nLogged out Successfully...\n");
+                return;
+            default:
+                printInvalidChoice();
+        }
+    }
+    public void DisplayCatalog(BufferedReader br){
+        //Display options
+        displayProfileOptions();
+
+        int profileCh=takeChoice(br);
+
+        switch (profileCh){
+            case 1:
+                //purchase product
+                System.out.println("Products Catalog");
+                //Displaying books
+                displayProductsToUser(br);
+
+                System.out.print("Enter the ProductID which you want ot purchase : ");
+                int purchasePid;
+                try{
+                    purchasePid=Integer.parseInt(br.readLine());
+                    if(products.get(purchasePid).getStock()>0){
+                        currentuser.purchaseProduct(purchasePid);
+                        System.out.println("Product Purchased successfully...\n");
+                        products.get(purchasePid).setStock(products.get(purchasePid).getStock()-1);
+                        profilePart(br);
+                        return;
+                    }else{
+                        System.out.println("This Product is Out Of stock...\n");
+                    }
+                    break;
+                }catch (Exception e){
+                    printInvalidInput();
+                }
+                return;
+            case 2:
+                //cancel purchase product
+
+            case 3:
+                //display profile
+                profilePart(br);
+                break;
+            case 4:
+                //take membership
+                break;
+            case 5:
+                //cancel membership
+                break;
+            default:
+                printInvalidChoice();
+                break;
+        }
+    }
+    public void getSignInInformation(BufferedReader br) {
+        printSignIn();
+        int choice;
+
+        while (true) {
+            //displaying sign in options
+            displaySignInOptions();
+            try
+            {
+                choice = takeChoice(br);
+                switch (choice) {
+                    case 1:
+                        String uName, uPass;
+                        System.out.print("Enter Username : ");
+                        uName = br.readLine();
+                        System.out.print("Enter Password : ");
+                        uPass = readPassword();
+                        if (users.size()==0) {
+                            System.out.println("Please Register first...!!!\n");
+                            return;
+                        }
+
+                        //validate credentials
+                        for(User tempUser:users){
+                            if (uName.equals(tempUser.getUserName()) && uPass.equals(tempUser.getPassWord())) {
+                                //credentials are valid
+                                System.out.println("Signed in Successfully...\n");
+
+                                // then set the user to current user as he is the active user
+                                currentuser=tempUser;
+                                currentuser.setLoggedIn(true);
+
+                                while(true) {
+                                    printAvailableProducts();
+                                    displayProductsToUser(br);
+                                    //Display Catalog
+                                    DisplayCatalog(br);
+
+                                    if (!currentuser.getIsLoggedIn()) {
+                                        currentuser=null;
+                                        break;
+                                    }
+                                }
+                                return;
+                            }
+                        }
+                        System.out.println("Invalid credentials ! Try Again...!!!\n");
+                        break;
+
+                    case 2:
+                        printForgotPassword();
+                        String uname;
+                        String pass;
+                        System.out.print("Enter your username :");
+                        uname = br.readLine();
+
+                        for(User tempUser:users){
+                            if (tempUser.getUserName().equals(uname)) {
+                                System.out.print("Enter new password : ");
+                                pass = readPassword();
+                                tempUser.setPassword(pass);
+                                System.out.println("Password changed Successfully...\n");
+                                return;
+                            }
+                        }
+                        System.out.println("User with given username doesn't exists...!!!\n");
+                        break;
+                    case 3:
+                        return;
+                    default:
+                        printInvalidChoice();
+
+                }
+            }catch(Exception e){
+                printInvalidInput();
+            }
+        }
+    }
+
+    public void registerUser(BufferedReader br) throws IOException {
+        String fullName,userName,userPass;
+
+        while(true){
+
+            System.out.print("Enter FullName : ");
+            fullName = br.readLine();
+            System.out.print("Enter Username : ");
+            userName = br.readLine();
+            System.out.print("Enter Password : ");
+            userPass = readPassword();
+
+            boolean flag=true;
+            //set all values to user object
+            for(User tempmUser:users){
+                if(tempmUser.getUserName().equals(userName)){
+                    System.out.println("------------------------------------------Sorry , This username is already taken by someone.Choose another one.------------------------------------------\n");
+                    flag=false;
+                    break;
+                }
+            }
+            if(flag){
+                User newUser=new User(fullName,userName,userPass);
+                users.add(newUser);
+                System.out.println("Registered in Successfully...\n");
+                break;
+            }
+        }
+    }
+    private void handleUser(BufferedReader br) {
+        int choice;
+        while(true){
+            displayInitialOptions();
+            System.out.print("Enter your choice : ");
+            try{
+                choice = Integer.parseInt(br.readLine());
+                switch (choice){
+                    case 1:
+                        //for sign in option
+                        getSignInInformation(br);
+                        break;
+                    case 2:
+                        //for register option
+                        //1.1 will print register details
+                        printRegister();
+                        registerUser(br);
+                        break;
+                    case 3:
+                        return;
+                    default:
+                        printInvalidChoice();
+                }
+            }catch (Exception e){
+                printInvalidInput();
+            }
+        }
+    }
 
 
     //Input print message functions are written seperated so the code will be clean
@@ -190,11 +430,11 @@ public class RetailStore {
         System.out.println("\n*************************| Welcome To The Stubborn RetailStore |**************************");
     }
 
-    public static void printAvailableBooks() {
+    public static void printAvailableProducts() {
         System.out.println("\n*************************| Available Products |**************************");
     }
 
-    public static void printPurchasedBooks() {
+    public static void printPurchasedProducts() {
         System.out.println("\n*************************| Purchased Products |**************************");
     }
 
@@ -240,8 +480,11 @@ public class RetailStore {
     }
 
     public static void displayProfileOptions() {
-        System.out.println("1.Show Profile");
-        System.out.println("2.Purchase");
+        System.out.println("1.Purchase Product");
+        System.out.println("2.Cancel Purchased Product");
+        System.out.println("3.Display Profile");
+        System.out.println("4.Take membership to get extra discounts");
+        System.out.println("5.Cancel membership if you already have");
     }
 
     public static void backToCatalogOpt() {
