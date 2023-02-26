@@ -27,6 +27,7 @@ public class RetailStore {
         products.add(new Product("5","Slice Cold-drink",20.0,25.0,20,0,0));
     }
 
+    //function to take the input from the user
     public int takeChoice(BufferedReader br){
         int choice;
         System.out.print("Enter your choice : ");
@@ -37,10 +38,14 @@ public class RetailStore {
             return -1;
         }
     }
+
+    //function to change the character array into the string
     public static String toString(char[] a) {
         String string = new String(a);
         return string;
     }
+
+    //function to hide the password while reading
     private static String readPassword() {
         Console console;
         if ((console = System.console()) != null) {
@@ -50,6 +55,7 @@ public class RetailStore {
         return null;
     }
 
+    //function to check is the admin with given admin details is there or not
     private int findAdmin(String uName,String password){
         for(int i=0;i<admins.length;i++){
             if(admins[i].getUserName().equals(uName) && admins[i].getPassWord().equals(password)){
@@ -58,61 +64,43 @@ public class RetailStore {
         }
         return -1;
     }
-    void addProduct(BufferedReader br){
-        try{
-            while(true){
-                System.out.print("Enter ProductName : ");
-                String pName = br.readLine();
-                System.out.print("Enter  Stock : ");
-                int pStock = Integer.parseInt(br.readLine());
-                System.out.print("Enter Base Price : ");
-                double bPrice = Double.parseDouble(br.readLine());
-                System.out.print("Enter Selling Price : ");
-                double sellPrice = Double.parseDouble(br.readLine());
-                System.out.print("Enter Discount percentage : ");
-                double disPer = Double.parseDouble(br.readLine());
-                System.out.print("Enter expected return days :");
-                int retDays=Integer.parseInt(br.readLine());
 
-                if(pStock<0 && bPrice<=0.0){
-                    System.out.println("Product Stock and Product Price can not be Negative or zero ...!!!\n");
-                    continue;
-                }
-                if(pStock < 0){
-                    System.out.println("Product Stock can not be Negative ...!!!\n");
-                    continue;
-                }
-                if(bPrice <=0.0){
-                    System.out.println("Product Price can not be less than or equal to 0...!!!\n");
-                    continue;
-                }
-                products.add(new Product(String.valueOf(products.size()),pName,bPrice,sellPrice,pStock,disPer,retDays));
-                System.out.println("New Product Added Successfully...\n");
-                break;
-            }
-        }catch (Exception e){
-            printInvalidInput();
-        }
-    }
+    //function to add the product which can be only used by admin
 
     private void displayProducts(BufferedReader br){
         printDashLine();
-        System.out.printf("%-11s %-20s %-11s %-6s %-12s %-12s %-8 %-18", "PRODUCT ID", "PRODUCTNAME", "ISAVAILABLE", "STOCK", "BASEPRICE","SELLPRICE","DISCOUNT","VALID RETURN DAYS");
+        System.out.println("hello display");
+        //System.out.printf("%-11s %-20s %-11s %-6s %-12s %-12s %-8 %-18", "PRODUCT ID", "PRODUCTNAME", "ISAVAILABLE", "STOCK", "BASEPRICE","SELLPRICE","DISCOUNT","VALID RETURN DAYS");
         System.out.println();
         printDashLine();
 //iterates over the list
-        for(Product prd: products)
-        {
-            String temp;
-            if(prd.getStock()>0){
-                temp="In-store";
-            }else{
-                temp="OutOfStock";
-            }
-            System.out.format("%-11s %-20s %-11s %-6s %-12s %-12s %-8 %-18",prd.getId(),prd.getPrdName(),temp,prd.getStock(),prd.getbPrice(),prd.getsPrice(),prd.getDiscount(),prd.getValidRetDays() );
-            System.out.println();
+//        for(Product prd: products)
+//        {
+//            String temp;
+//            if(prd.getStock()>0){
+//                temp="In-store";
+//            }else{
+//                temp="OutOfStock";
+//            }
+//            System.out.format("%-11s %-20s %-11s %-6s %-12s %-12s %-8 %-18",prd.getId(),prd.getPrdName(),temp,prd.getStock(),prd.getbPrice(),prd.getsPrice(),prd.getDiscount(),prd.getValidRetDays() );
+//            System.out.println();
+//        }
+//        System.out.println("----------------------------------------------------------------------------------------------");
+    }
+
+    private void countTotalProducts(){
+        System.out.println("Total number of products availabe in Store : " + products.size());
+    }
+
+    private void calculateMaxProfit(){
+        double totalProfit=0;
+        for(Product prd:products){
+            double totalSellPrice=prd.getsPrice()*prd.getStock();
+            double totalDiscount=totalSellPrice*prd.getDiscount()/100;
+            double totalBuyingPrice=prd.getbPrice()*prd.getStock();
+            totalProfit+= totalSellPrice - totalDiscount - totalBuyingPrice ;
         }
-        System.out.println("----------------------------------------------------------------------------------------------");
+        System.out.println("Maximum Profit can be achieved is : "+totalProfit+" Rs.");
     }
     public void handleAdmin(BufferedReader br) throws IOException {
         printAdminWelcomeMsg();
@@ -135,7 +123,7 @@ public class RetailStore {
                    choice = takeChoice(br);
                    switch(choice){
                        case 1:
-                           addProduct(br);
+                           admins[currAdminIndex].addProduct(products,br);
                            break;
                        case 2:
                            displayProducts(br);
@@ -145,6 +133,8 @@ public class RetailStore {
                            break;
                        case 4:
                            calculateMaxProfit();
+                           break;
+                       case 5:
                            return;
                        default:
                            printInvalidChoice();
@@ -174,13 +164,14 @@ public class RetailStore {
                     case 1:
                         handleAdmin(br);
                         break;
-                    case 2:
-                        handleUser(br);
-                        break;
-                    case 3:
-                        return;
+                    //case 2:
+                        //handleUser(br);
+                      //  break;
+                    //case 3:
+                      //  return;
                     default:
                         printInvalidChoice();
+                        break;
                 }
             }catch (Exception e ){
                 printInvalidInput();
@@ -188,6 +179,9 @@ public class RetailStore {
         }
     }
 
+
+
+    //Input print message functions are written seperated so the code will be clean
     public static void printDashLine() {
         System.out.println("---------------------------------------------------------------------------------------------");
     }
