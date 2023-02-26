@@ -1,0 +1,539 @@
+Index: src/Product.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>public class Product {\r\n    private String id;\r\n    private String prdName;\r\n    private double bPrice;\r\n    private double sPrice;\r\n    private int stock;\r\n    private  double discount;\r\n    private int validRetDays;\r\n    private static int deltaID;\r\n\r\n    //make setter and getter\r\n\r\n    public Product(String id,String prdName,double bPrice,double sPrice,int stock,double discount,int validRetDays){\r\n        this.id=id;\r\n        this.prdName=prdName;\r\n        this.bPrice=bPrice;\r\n        this.sPrice=sPrice;\r\n        this.stock=stock;\r\n        this.discount=discount;\r\n        this.validRetDays=validRetDays;\r\n    }\r\n\r\n    public void setId(String id) {\r\n        this.id = id;\r\n    }\r\n\r\n    public void setPrdName(String prdName) {\r\n        this.prdName = prdName;\r\n    }\r\n\r\n    public void setbPrice(double bPrice) {\r\n        this.bPrice = bPrice;\r\n    }\r\n\r\n    public void setsPrice(double sPrice) {\r\n        this.sPrice = sPrice;\r\n    }\r\n\r\n    public void setStock(int stock) {\r\n        this.stock = stock;\r\n    }\r\n\r\n    public void setDiscount(double discount) {\r\n        this.discount = discount;\r\n    }\r\n\r\n    public void setValidRetDays(int validRetDays) {\r\n        this.validRetDays = validRetDays;\r\n    }\r\n\r\n    public static void setDeltaID(int deltaID) {\r\n        Product.deltaID = deltaID;\r\n    }\r\n\r\n    public String getId() {\r\n        return id;\r\n    }\r\n\r\n    public String getPrdName() {\r\n        return prdName;\r\n    }\r\n\r\n    public double getsPrice() {\r\n        return sPrice;\r\n    }\r\n\r\n    public double getbPrice() {\r\n        return bPrice;\r\n    }\r\n\r\n    public int getStock() {\r\n        return stock;\r\n    }\r\n\r\n    public double getDiscount() {\r\n        return discount;\r\n    }\r\n\r\n    public static int getDeltaID() {\r\n        return deltaID;\r\n    }\r\n\r\n    public int getValidRetDays() {\r\n        return validRetDays;\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Product.java b/src/Product.java
+--- a/src/Product.java	(revision 0c4f34b0ea38efe4db7978f3030c93396c465159)
++++ b/src/Product.java	(date 1677416322629)
+@@ -18,6 +18,7 @@
+         this.stock=stock;
+         this.discount=discount;
+         this.validRetDays=validRetDays;
++        deltaID=1;
+     }
+ 
+     public void setId(String id) {
+Index: src/RetailStore.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.io.BufferedReader;\r\nimport java.io.Console;\r\nimport java.io.IOException;\r\nimport java.io.InputStreamReader;\r\nimport java.sql.Array;\r\nimport java.util.ArrayList;\r\n\r\npublic class RetailStore {\r\n    //no of admins are fixed so normal fixed size array is ok\r\n    private Admin[] admins;\r\n    private ArrayList<Product> products;\r\n    //users can be added dynamically so array size is not fixed so arraylist\r\n    private ArrayList<User> users;\r\n    private int currAdminIndex;\r\n\r\n    RetailStore(){\r\n        currAdminIndex = -1;\r\n        admins=new Admin[2];\r\n        admins[0] = new Admin(\"darshit\",\"darshit\",\"darshit\");\r\n        admins[1]= new Admin(\"chirag\",\"chirag\",\"chirag\");\r\n        users = new ArrayList<User>();\r\n        products = new ArrayList<Product>();\r\n        products.add(new Product(\"1\",\"Biscuit\",50.0,70.0,55,5,0));\r\n        products.add(new Product(\"2\",\"Rin Powder\",200.0,300.0,12,20,5));\r\n        products.add(new Product(\"3\",\"Patanjali Shampoo\",450.0,600.0,15,10,6));\r\n        products.add(new Product(\"4\",\"Dove Soap\",70.0,100.0,15,12,1));\r\n        products.add(new Product(\"5\",\"Slice Cold-drink\",20.0,25.0,20,0,0));\r\n    }\r\n\r\n    public int takeChoice(BufferedReader br){\r\n        int choice;\r\n        System.out.print(\"Enter your choice : \");\r\n        try{\r\n            choice = Integer.parseInt(br.readLine());\r\n            return choice;\r\n        }catch (Exception e){\r\n            return -1;\r\n        }\r\n    }\r\n    public static String toString(char[] a) {\r\n        String string = new String(a);\r\n        return string;\r\n    }\r\n    private static String readPassword() {\r\n        Console console;\r\n        if ((console = System.console()) != null) {\r\n            char[] password = console.readPassword();\r\n            return toString(password);\r\n        }\r\n        return null;\r\n    }\r\n\r\n    private int findAdmin(String uName,String password){\r\n        for(int i=0;i<admins.length;i++){\r\n            if(admins[i].getUserName().equals(uName) && admins[i].getPassWord().equals(password)){\r\n                return i;\r\n            }\r\n        }\r\n        return -1;\r\n    }\r\n    void addProduct(BufferedReader br){\r\n        try{\r\n            while(true){\r\n                System.out.print(\"Enter ProductName : \");\r\n                String pName = br.readLine();\r\n                System.out.print(\"Enter  Stock : \");\r\n                int pStock = Integer.parseInt(br.readLine());\r\n                System.out.print(\"Enter Base Price : \");\r\n                double bPrice = Double.parseDouble(br.readLine());\r\n                System.out.print(\"Enter Selling Price : \");\r\n                double sellPrice = Double.parseDouble(br.readLine());\r\n                System.out.print(\"Enter Discount percentage : \");\r\n                double disPer = Double.parseDouble(br.readLine());\r\n                System.out.print(\"Enter expected return days :\");\r\n                int retDays=Integer.parseInt(br.readLine());\r\n\r\n                if(pStock<0 && bPrice<=0.0){\r\n                    System.out.println(\"Product Stock and Product Price can not be Negative or zero ...!!!\\n\");\r\n                    continue;\r\n                }\r\n                if(pStock < 0){\r\n                    System.out.println(\"Product Stock can not be Negative ...!!!\\n\");\r\n                    continue;\r\n                }\r\n                if(bPrice <=0.0){\r\n                    System.out.println(\"Product Price can not be less than or equal to 0...!!!\\n\");\r\n                    continue;\r\n                }\r\n                products.add(new Product(String.valueOf(products.size()),pName,bPrice,sellPrice,pStock,disPer,retDays));\r\n                System.out.println(\"New Product Added Successfully...\\n\");\r\n                break;\r\n            }\r\n        }catch (Exception e){\r\n            printInvalidInput();\r\n        }\r\n    }\r\n\r\n    private void displayProducts(BufferedReader br){\r\n        printDashLine();\r\n        System.out.printf(\"%-11s %-20s %-11s %-6s %-12s %-12s %-8 %-18\", \"PRODUCT ID\", \"PRODUCTNAME\", \"ISAVAILABLE\", \"STOCK\", \"BASEPRICE\",\"SELLPRICE\",\"DISCOUNT\",\"VALID RETURN DAYS\");\r\n        System.out.println();\r\n        printDashLine();\r\n//iterates over the list\r\n        for(Product prd: products)\r\n        {\r\n            String temp;\r\n            if(prd.getStock()>0){\r\n                temp=\"In-store\";\r\n            }else{\r\n                temp=\"OutOfStock\";\r\n            }\r\n            System.out.format(\"%-11s %-20s %-11s %-6s %-12s %-12s %-8 %-18\",prd.getId(),prd.getPrdName(),temp,prd.getStock(),prd.getbPrice(),prd.getsPrice(),prd.getDiscount(),prd.getValidRetDays() );\r\n            System.out.println();\r\n        }\r\n        System.out.println(\"----------------------------------------------------------------------------------------------\");\r\n    }\r\n    public void handleAdmin(BufferedReader br) throws IOException {\r\n        printAdminWelcomeMsg();\r\n        String aName;\r\n        String aPass;\r\n\r\n        while(true){\r\n            System.out.print(\"Enter username : \");\r\n            aName = br.readLine();\r\n            System.out.print(\"Enter password : \");\r\n            aPass = readPassword();\r\n            int res = findAdmin(aName,aPass);\r\n            currAdminIndex = res;\r\n           if(res!=-1){\r\n               System.out.println(\"Logged In Successfully...\");\r\n               int choice;\r\n\r\n               while(true){\r\n                   displayAdminOptions();\r\n                   choice = takeChoice(br);\r\n                   switch(choice){\r\n                       case 1:\r\n                           addProduct(br);\r\n                           break;\r\n                       case 2:\r\n                           displayProducts(br);\r\n                           break;\r\n                       case 3:\r\n                           countTotalProducts();\r\n                           break;\r\n                       case 4:\r\n                           calculateMaxProfit();\r\n                           return;\r\n                       default:\r\n                           printInvalidChoice();\r\n                           break;\r\n                   }\r\n               }\r\n           }else{\r\n               System.out.println(\"Invalid Admin Credentials\");\r\n           }\r\n\r\n        }\r\n    }\r\n    public void start(){\r\n        BufferedReader br =new BufferedReader(new InputStreamReader(System.in));\r\n        // for printing welcome message\r\n        printWelcomeMsg();\r\n        printLine();\r\n\r\n        int choice;\r\n\r\n        while(true){\r\n            displayTypeOfUserOptions();\r\n            System.out.print(\"Enter your choice : \");\r\n            try{\r\n                choice = Integer.parseInt(br.readLine());\r\n                switch (choice){\r\n                    case 1:\r\n                        handleAdmin(br);\r\n                        break;\r\n                    case 2:\r\n                        handleUser(br);\r\n                        break;\r\n                    case 3:\r\n                        return;\r\n                    default:\r\n                        printInvalidChoice();\r\n                }\r\n            }catch (Exception e ){\r\n                printInvalidInput();\r\n            }\r\n        }\r\n    }\r\n\r\n    public static void printDashLine() {\r\n        System.out.println(\"---------------------------------------------------------------------------------------------\");\r\n    }\r\n\r\n    public static void printWelcomeMsg() {\r\n        System.out.println(\"\\n*************************| Welcome To The Stubborn RetailStore |**************************\");\r\n    }\r\n\r\n    public static void printAvailableBooks() {\r\n        System.out.println(\"\\n*************************| Available Products |**************************\");\r\n    }\r\n\r\n    public static void printPurchasedBooks() {\r\n        System.out.println(\"\\n*************************| Purchased Products |**************************\");\r\n    }\r\n\r\n    public static void printLine() {\r\n        System.out.println(\"=======================================================================================\");\r\n    }\r\n\r\n    public static void printSignIn() {\r\n        System.out.println(\"\\n*************************| Sign In |**************************\");\r\n    }\r\n\r\n    public static void printRegister() {\r\n        System.out.println(\"\\n*************************| Register |**************************\");\r\n    }\r\n\r\n    public static void printForgotPassword() {\r\n        System.out.println(\"\\n*********| Forgot Password |**********\");\r\n    }\r\n\r\n    public static void printAdminWelcomeMsg() {\r\n        System.out.println(\"\\n*********| Welcome To The Admin panel of The Stubborn Retail Store |**********\");\r\n    }\r\n\r\n    public static void printInvalidInput() {\r\n        System.out.println(\"Invalid Input...!!!\\n\");\r\n    }\r\n\r\n    public static void printInvalidChoice() {\r\n        System.out.println(\"Invalid Choice...!!!\\n\");\r\n    }\r\n\r\n    //designing functions\r\n    public static void displayInitialOptions() {\r\n        System.out.println(\"1. Sign In\");\r\n        System.out.println(\"2. Register\");\r\n        System.out.println(\"3. Exit\");\r\n    }\r\n\r\n    public static void displaySignInOptions() {\r\n        System.out.println(\"1. Enter credentials\");\r\n        System.out.println(\"2. Forgot Password\");\r\n        System.out.println(\"3. Exit\");\r\n    }\r\n\r\n    public static void displayProfileOptions() {\r\n        System.out.println(\"1.Show Profile\");\r\n        System.out.println(\"2.Purchase\");\r\n    }\r\n\r\n    public static void backToCatalogOpt() {\r\n        System.out.println(\"1.Back to Catalog\");\r\n        System.out.println(\"2.Logout\");\r\n    }\r\n\r\n    public static void displayTypeOfUserOptions() {\r\n        System.out.println(\"1. Admin\");\r\n        System.out.println(\"2. User\");\r\n        System.out.println(\"3. Exit\");\r\n    }\r\n\r\n    public static void displayAdminOptions() {\r\n        System.out.println(\"1. Add Product\");\r\n        System.out.println(\"2. Display Products\");\r\n        System.out.println(\"3. Get total No of products\");\r\n        System.out.println(\"4. Calculate Maximum Profit\");\r\n        System.out.println(\"5. Exit\");\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/RetailStore.java b/src/RetailStore.java
+--- a/src/RetailStore.java	(revision 0c4f34b0ea38efe4db7978f3030c93396c465159)
++++ b/src/RetailStore.java	(date 1677416916859)
+@@ -2,16 +2,17 @@
+ import java.io.Console;
+ import java.io.IOException;
+ import java.io.InputStreamReader;
+-import java.sql.Array;
+ import java.util.ArrayList;
+ 
+ public class RetailStore {
+-    //no of admins are fixed so normal fixed size array is ok
++    //no of admins are fixe
++    // d so normal fixed size array is ok
+     private Admin[] admins;
+     private ArrayList<Product> products;
+     //users can be added dynamically so array size is not fixed so arraylist
+     private ArrayList<User> users;
+     private int currAdminIndex;
++    private User currentuser ;
+ 
+     RetailStore(){
+         currAdminIndex = -1;
+@@ -114,6 +115,26 @@
+         }
+         System.out.println("----------------------------------------------------------------------------------------------");
+     }
++    private void displayProductsToUser(BufferedReader br){
++        printDashLine();
++        System.out.printf("%-11s %-20s %-11s %-6s %-12s %-20s", "PRODUCT ID", "PRODUCTNAME", "ISAVAILABLE","PRICE","DISCOUNT","VALID RETURN DAYS");
++        System.out.println();
++        printDashLine();
++        //iterates over the list
++        for(Product prd: products)
++        {
++            String temp;
++            if(prd.getStock()>0){
++                temp="In-store";
++            }else{
++                temp="OutOfStock";
++            }
++            System.out.format("%-11s %-20s %-11s %-6s %-12s %-20s",prd.getId(),prd.getPrdName(),temp,prd.getsPrice(),prd.getDiscount(),prd.getValidRetDays() );
++            System.out.println();
++        }
++        System.out.println("----------------------------------------------------------------------------------------------");
++    }
++
+     public void handleAdmin(BufferedReader br) throws IOException {
+         printAdminWelcomeMsg();
+         String aName;
+@@ -157,6 +178,13 @@
+ 
+         }
+     }
++
++    private void calculateMaxProfit() {
++    }
++
++    private void countTotalProducts() {
++    }
++
+     public void start(){
+         BufferedReader br =new BufferedReader(new InputStreamReader(System.in));
+         // for printing welcome message
+@@ -187,6 +215,226 @@
+             }
+         }
+     }
++    public void profilePart(BufferedReader br){
++        currentuser.showProfile();
++
++        printPurchasedProducts();
++
++        printDashLine();
++        System.out.printf("%-8s %-20s %-15s", "BOOK ID", "BOOKNAME", "PRICEPOINTS");
++        System.out.println();
++        printDashLine();
++        if(currentuser.getPurchasedProductsSize()==0){
++            System.out.println("--------------------------You haven't purchased any books--------------------------------\n");
++        }else{
++            for(int i=currentuser.getPurchasedProductsSize()-1;i>=0;i--){
++                //int id = currentuser.getPurchasedProducts().get(i);
++//                Book tBook = books.get(id);
++//                System.out.format("%-8s %-20s %-15s", tBook.getBookId(), tBook.getBookName(), tBook.getPricePoints());
++                System.out.println();
++            }
++        }
++
++        printLine();
++        backToCatalogOpt();
++
++        int catalogChoice=takeChoice(br);
++        switch(catalogChoice){
++            case 1:
++                return;
++            case 2:
++                currentuser.setLoggedIn(false);
++                System.out.println("\nLogged out Successfully...\n");
++                return;
++            default:
++                printInvalidChoice();
++        }
++    }
++    public void DisplayCatalog(BufferedReader br){
++        //Display options
++        displayProfileOptions();
++
++        int profileCh=takeChoice(br);
++
++        switch (profileCh){
++            case 1:
++                //purchase product
++                System.out.println("Products Catalog");
++                //Displaying books
++                displayProductsToUser(br);
++
++                System.out.print("Enter the ProductID which you want ot purchase : ");
++                int purchasePid;
++                try{
++                    purchasePid=Integer.parseInt(br.readLine());
++                    if(products.get(purchasePid).getStock()>0){
++                        currentuser.purchaseProduct(purchasePid);
++                        System.out.println("Product Purchased successfully...\n");
++                        products.get(purchasePid).setStock(products.get(purchasePid).getStock()-1);
++                        profilePart(br);
++                        return;
++                    }else{
++                        System.out.println("This Product is Out Of stock...\n");
++                    }
++                    break;
++                }catch (Exception e){
++                    printInvalidInput();
++                }
++                return;
++            case 2:
++                //cancel purchase product
++
++            case 3:
++                //display profile
++                profilePart(br);
++                break;
++            case 4:
++                //take membership
++                break;
++            case 5:
++                //cancel membership
++                break;
++            default:
++                printInvalidChoice();
++                break;
++        }
++    }
++    public void getSignInInformation(BufferedReader br) {
++        printSignIn();
++        int choice;
++
++        while (true) {
++            //displaying sign in options
++            displaySignInOptions();
++            try
++            {
++                choice = takeChoice(br);
++                switch (choice) {
++                    case 1:
++                        String uName, uPass;
++                        System.out.print("Enter Username : ");
++                        uName = br.readLine();
++                        System.out.print("Enter Password : ");
++                        uPass = readPassword();
++                        if (users.size()==0) {
++                            System.out.println("Please Register first...!!!\n");
++                            return;
++                        }
++
++                        //validate credentials
++                        for(User tempUser:users){
++                            if (uName.equals(tempUser.getUserName()) && uPass.equals(tempUser.getPassWord())) {
++                                //credentials are valid
++                                System.out.println("Signed in Successfully...\n");
++
++                                // then set the user to current user as he is the active user
++                                currentuser=tempUser;
++                                currentuser.setLoggedIn(true);
++
++                                while(true) {
++                                    printAvailableProducts();
++                                    displayProductsToUser(br);
++                                    //Display Catalog
++                                    DisplayCatalog(br);
++
++                                    if (!currentuser.getIsLoggedIn()) {
++                                        currentuser=null;
++                                        break;
++                                    }
++                                }
++                                return;
++                            }
++                        }
++                        System.out.println("Invalid credentials ! Try Again...!!!\n");
++                        break;
++
++                    case 2:
++                        printForgotPassword();
++                        String uname;
++                        String pass;
++                        System.out.print("Enter your username :");
++                        uname = br.readLine();
++
++                        for(User tempUser:users){
++                            if (tempUser.getUserName().equals(uname)) {
++                                System.out.print("Enter new password : ");
++                                pass = readPassword();
++                                tempUser.setPassword(pass);
++                                System.out.println("Password changed Successfully...\n");
++                                return;
++                            }
++                        }
++                        System.out.println("User with given username doesn't exists...!!!\n");
++                        break;
++                    case 3:
++                        return;
++                    default:
++                        printInvalidChoice();
++
++                }
++            }catch(Exception e){
++                printInvalidInput();
++            }
++        }
++    }
++
++    public void registerUser(BufferedReader br) throws IOException {
++        String fullName,userName,userPass;
++
++        while(true){
++
++            System.out.print("Enter FullName : ");
++            fullName = br.readLine();
++            System.out.print("Enter Username : ");
++            userName = br.readLine();
++            System.out.print("Enter Password : ");
++            userPass = readPassword();
++
++            boolean flag=true;
++            //set all values to user object
++            for(User tempmUser:users){
++                if(tempmUser.getUserName().equals(userName)){
++                    System.out.println("------------------------------------------Sorry , This username is already taken by someone.Choose another one.------------------------------------------\n");
++                    flag=false;
++                    break;
++                }
++            }
++            if(flag){
++                User newUser=new User(fullName,userName,userPass);
++                users.add(newUser);
++                System.out.println("Registered in Successfully...\n");
++                break;
++            }
++        }
++    }
++    private void handleUser(BufferedReader br) {
++        int choice;
++        while(true){
++            displayInitialOptions();
++            System.out.print("Enter your choice : ");
++            try{
++                choice = Integer.parseInt(br.readLine());
++                switch (choice){
++                    case 1:
++                        //for sign in option
++                        getSignInInformation(br);
++                        break;
++                    case 2:
++                        //for register option
++                        //1.1 will print register details
++                        printRegister();
++                        registerUser(br);
++                        break;
++                    case 3:
++                        return;
++                    default:
++                        printInvalidChoice();
++                }
++            }catch (Exception e){
++                printInvalidInput();
++            }
++        }
++    }
+ 
+     public static void printDashLine() {
+         System.out.println("---------------------------------------------------------------------------------------------");
+@@ -196,11 +444,11 @@
+         System.out.println("\n*************************| Welcome To The Stubborn RetailStore |**************************");
+     }
+ 
+-    public static void printAvailableBooks() {
++    public static void printAvailableProducts() {
+         System.out.println("\n*************************| Available Products |**************************");
+     }
+ 
+-    public static void printPurchasedBooks() {
++    public static void printPurchasedProducts() {
+         System.out.println("\n*************************| Purchased Products |**************************");
+     }
+ 
+@@ -246,8 +494,11 @@
+     }
+ 
+     public static void displayProfileOptions() {
+-        System.out.println("1.Show Profile");
+-        System.out.println("2.Purchase");
++        System.out.println("1.Purchase Product");
++        System.out.println("2.Cancel Purchased Product");
++        System.out.println("3.Display Profile");
++        System.out.println("4.Take membership to get extra discounts");
++        System.out.println("5.Cancel membership if you already have");
+     }
+ 
+     public static void backToCatalogOpt() {
+Index: src/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>public class Main {\r\n    public static void main(String[] args) {\r\n        RetailStore retailStore = new RetailStore();\r\n        retailStore.start();\r\n\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Main.java b/src/Main.java
+--- a/src/Main.java	(revision 0c4f34b0ea38efe4db7978f3030c93396c465159)
++++ b/src/Main.java	(date 1677412793502)
+@@ -2,6 +2,5 @@
+     public static void main(String[] args) {
+         RetailStore retailStore = new RetailStore();
+         retailStore.start();
+-
+     }
+ }
+\ No newline at end of file
+Index: src/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.util.Date;\r\nimport java.util.HashMap;\r\n\r\npublic class User extends Person{\r\n    private boolean isMember;\r\n    //storing information about the product user has purchased along with purchased date\r\n    private HashMap<String, Date> purchasedPrd;\r\n\r\n    public User(){\r\n        purchasedPrd = new HashMap<String,Date>();\r\n    }\r\n    @Override\r\n    public boolean login(String userName, String passWord) {\r\n        return false;\r\n    }\r\n\r\n    void register(String userName,String password,String fullName){\r\n\r\n    }\r\n    @Override\r\n    public void changePassword() {\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/User.java b/src/User.java
+--- a/src/User.java	(revision 0c4f34b0ea38efe4db7978f3030c93396c465159)
++++ b/src/User.java	(date 1677416916874)
+@@ -1,13 +1,40 @@
++import java.util.ArrayList;
+ import java.util.Date;
+ import java.util.HashMap;
+ 
+ public class User extends Person{
+     private boolean isMember;
++    private boolean isLoggedIn;
+     //storing information about the product user has purchased along with purchased date
+     private HashMap<String, Date> purchasedPrd;
++    String getUserName(){
++        return this.userName;
++    }
++
++    String getPassWord(){
++        return this.passWord;
++    }
++    public void purchaseProduct(int pid){
++        int lastProductID = Product.getDeltaID();
++        Product.setDeltaID(lastProductID+1);
++        Date currDate = new Date();
++        //original productID.lastProductID.date
++        String finalProductID = String.valueOf(pid) +"."+ String.valueOf(lastProductID);
++        purchasedPrd.put(finalProductID,currDate);
++    }
+ 
+-    public User(){
++    public void setPassword(String passWord){
++        this.passWord = passWord;
++    }
++    public void getPassword(String passWord){
++        this.passWord = passWord;
++    }
++
++    public User(String fullName,String userName,String userPass){
+         purchasedPrd = new HashMap<String,Date>();
++        this.fullName=fullName;
++        this.userName=userName;
++        this.passWord=userPass;
+     }
+     @Override
+     public boolean login(String userName, String passWord) {
+@@ -20,5 +47,24 @@
+     @Override
+     public void changePassword() {
+ 
++    }
++    public void setLoggedIn(boolean stat){this.isLoggedIn=stat;}
++    public boolean getIsLoggedIn() {
++        return isLoggedIn;
++    }
++
++    public void showProfile(){
++        System.out.println("::: My Profile :::");
++        System.out.println("Username : "+this.userName);
++        System.out.println("FullName : "+this.fullName);
++        System.out.println("My Purchased Products :: ");
++    }
++
++    public int getPurchasedProductsSize(){
++        return purchasedPrd.size();
++    }
++
++    public HashMap<String, Date> getPurchasedProducts(){
++        return purchasedPrd;
+     }
+ }
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"7c07bef5-9c70-4ad2-9ccd-3612ec88d16a\" name=\"Changes\" comment=\"StartingProject\">\r\n      <change afterPath=\"$PROJECT_DIR$/src/Admin.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/Fine.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/Person.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/Product.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/RetailStore.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/src/User.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/src/Main.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Main.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n        <option value=\"Interface\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"PUSH_TAGS\">\r\n      <GitPushTagMode>\r\n        <option name=\"argument\" value=\"--tags\" />\r\n        <option name=\"title\" value=\"All\" />\r\n      </GitPushTagMode>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MarkdownSettingsMigration\">\r\n    <option name=\"stateVersion\" value=\"1\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"2MGtpoVvdDcw1frDgBx1YB4mM8E\" />\r\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"last_opened_file_path\": \"H:/DAIICT/MScIT/Sem2/OOP/BookStore\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"7c07bef5-9c70-4ad2-9ccd-3612ec88d16a\" name=\"Changes\" comment=\"\" />\r\n      <created>1677405934329</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1677405934329</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"StartingProject\">\r\n      <created>1677406130356</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1677406130356</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"2\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"StartingProject\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"StartingProject\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 0c4f34b0ea38efe4db7978f3030c93396c465159)
++++ b/.idea/workspace.xml	(date 1677416322762)
+@@ -4,36 +4,19 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="7c07bef5-9c70-4ad2-9ccd-3612ec88d16a" name="Changes" comment="StartingProject">
+-      <change afterPath="$PROJECT_DIR$/src/Admin.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/Fine.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/Person.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/Product.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/RetailStore.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/src/User.java" afterDir="false" />
++    <list default="true" id="7c07bef5-9c70-4ad2-9ccd-3612ec88d16a" name="Changes" comment="">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Product.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Product.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/RetailStore.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/RetailStore.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/User.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+     <option name="LAST_RESOLUTION" value="IGNORE" />
+-  </component>
+-  <component name="FileTemplateManagerImpl">
+-    <option name="RECENT_TEMPLATES">
+-      <list>
+-        <option value="Class" />
+-        <option value="Interface" />
+-      </list>
+-    </option>
+   </component>
+   <component name="Git.Settings">
+-    <option name="PUSH_TAGS">
+-      <GitPushTagMode>
+-        <option name="argument" value="--tags" />
+-        <option name="title" value="All" />
+-      </GitPushTagMode>
+-    </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
+   <component name="MarkdownSettingsMigration">
+@@ -45,13 +28,12 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "RunOnceActivity.OpenProjectViewOnStart": "true",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "last_opened_file_path": "H:/DAIICT/MScIT/Sem2/OOP/BookStore"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+   <component name="TaskManager">
+     <task active="true" id="Default" summary="Default task">
+@@ -61,18 +43,17 @@
+       <option name="presentableId" value="Default" />
+       <updated>1677405934329</updated>
+     </task>
+-    <task id="LOCAL-00001" summary="StartingProject">
+-      <created>1677406130356</created>
+-      <option name="number" value="00001" />
+-      <option name="presentableId" value="LOCAL-00001" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1677406130356</updated>
+-    </task>
+-    <option name="localTasksCounter" value="2" />
+     <servers />
+   </component>
+-  <component name="VcsManagerConfiguration">
+-    <MESSAGE value="StartingProject" />
+-    <option name="LAST_COMMIT_MESSAGE" value="StartingProject" />
++  <component name="Vcs.Log.Tabs.Properties">
++    <option name="TAB_STATES">
++      <map>
++        <entry key="MAIN">
++          <value>
++            <State />
++          </value>
++        </entry>
++      </map>
++    </option>
+   </component>
+ </project>
+\ No newline at end of file
